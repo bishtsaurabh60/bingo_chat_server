@@ -44,7 +44,7 @@ const io = new Server(httpServer, {
     cors: {
         origin: (origin, callback) => {
             if (
-              ["https://bingo-chat-api.onrender.com/"].indexOf(origin) !== -1
+              ["https://bingo-chat.onrender.com/"].indexOf(origin) !== -1
             ) {
               callback(null, true);
             } else {
