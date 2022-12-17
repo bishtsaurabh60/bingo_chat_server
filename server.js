@@ -43,10 +43,12 @@ const io = new Server(httpServer, {
     pingTimeout: 60000,
     cors: {
         origin: (origin, callback) => {
-            if (['http://localhost:3000'].indexOf(origin) !== -1) {
-                callback(null, true);
+            if (
+              ["https://bingo-chat-api.onrender.com/"].indexOf(origin) !== -1
+            ) {
+              callback(null, true);
             } else {
-                callback(new Error('Not allowed by CORS'));
+              callback(new Error("Not allowed by CORS"));
             }
         },
         credentials:true,
