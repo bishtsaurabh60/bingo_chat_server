@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (
-        ["http://localhost:5000", "https://bingo-chat.onrender.com"].indexOf(
+        ["http://localhost:3000", "https://bingo-chat.onrender.com"].indexOf(
           origin
         ) !== -1
       ) {
@@ -61,7 +61,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
-    origin:"https://bingo-chat.onrender.com"
+    origin: ["http://localhost:3000", "https://bingo-chat.onrender.com"],
   },
 });
 
