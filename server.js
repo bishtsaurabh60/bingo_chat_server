@@ -44,19 +44,20 @@ const PORT = process.env.PORT || 5000;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-    pingTimeout: 60000,
-    cors: {
-        origin: (origin, callback) => {
-            if (
-              ["https://bingo-chat.onrender.com/"].indexOf(origin) !== -1
-            ) {
-              callback(null, true);
-            } else {
-              callback(new Error("Not allowed by CORS"));
-            }
-        },
-        credentials:true,
+  // pingTimeout: 60000,
+  cors: {
+    origin: (origin, callback) => {
+      if (
+        ["https://bingo-chat.onrender.com"].indexOf(
+          origin
+        ) !== -1
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
+  },
 });
 
 io.on('connection', (socket) => {
