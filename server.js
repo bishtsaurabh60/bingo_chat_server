@@ -23,19 +23,6 @@ app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
-app.get('/', (req, res) => {
-    res.send('Home_page');
-});
-
-app.all('*', function (req, res) {
-    res.status(404);
-    if (req.accepts('html')) res.send('404 error this page could not be found');
-    else if (req.accepts('json')) res.json({ message: "404 error this page could not be found" });
-    else {
-        res.type('txt').send("404 error this page could not be found");
-    }
-});
-
 // Error Handling middlewares
 app.use(notFound);
 app.use(errorHandler);
