@@ -17,7 +17,22 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json()); // to accept json data
 app.use(express.urlencoded({ extended: true })); // to accept form data
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (
+        ["http://localhost:5000", "https://bingo-chat.onrender.com"].indexOf(
+          origin
+        ) !== -1
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
@@ -46,14 +61,7 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
-    origin: (origin, callback) => {
-      if (["http://localhost:5000","https://bingo-chat.onrender.com"].indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+    origin:"https://bingo-chat.onrender.com"
   },
 });
 
