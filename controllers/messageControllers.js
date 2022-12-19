@@ -17,15 +17,15 @@ const sendMessage = asyncHandler(async (req, res) => {
         return res.sendStatus(400).json({ error: "Invalid data passed into request" });
     }
 
-    let newMessage = {
-        sender: req.user._id,
-        content,
-        chat: chatId
-    };
-
     try {
+        const newMessage = {
+          sender: req.user._id,
+          content,
+          chat: chatId,
+        };
         let message = await Message.create(newMessage);
-        message = await message.populate('sender', 'name pic');
+
+       message = await message.populate('sender', 'name pic');
         message = await message.populate('chat');
         message = await User.populate(message, {
             path: 'chat.users',
@@ -36,7 +36,7 @@ const sendMessage = asyncHandler(async (req, res) => {
             latestMessage:message
         });
 
-        res.status(201).json(message);
+        return res.status(201).json(message);
     } catch (err) {
         res.status(400);
         throw new Error(err.message);
@@ -52,7 +52,7 @@ const allMessages = asyncHandler(async (req, res) => {
         const messages = await Message.find({ chat: req.params.chatId })
             .populate("sender", "name pic email")
             .populate("chat");
-        res.status(200).json(messages);
+        return res.status(200).json(messages);
     } catch (err) {
         res.status(400);
         throw new Error(err.message);

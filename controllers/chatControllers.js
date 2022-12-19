@@ -236,6 +236,34 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     res.status(200).json(removed);
   }
 });
+const leaveFromGroup = asyncHandler(async (req, res) => {
+  const { userId, chatId } = req.body;
+
+  // check if the requester is admin
+  const groupChatExists = await Chat.findOne({ _id: chatId }); // Find if group chat exists.
+
+  if (!groupChatExists) {
+    // Error: No group chat with the given id exists.
+    return res.status(400).json({ error: "Invalid group chat Id." });
+  }
+
+  const removed = await Chat.findByIdAndUpdate(
+    chatId,
+    {
+      $pull: { users: userId },
+    },
+    { new: true }
+  )
+    .populate("users", "-password")
+    .populate("groupAdmin", "-password");
+
+  if (!removed) {
+    res.status(400);
+    throw new Error("Group Not Found");
+  } else {
+    res.status(200).json(removed);
+  }
+});
 
 export {
   accessChat,
@@ -243,5 +271,6 @@ export {
   createGroupChat,
   renameGroup,
   removeFromGroup,
+  leaveFromGroup,
   addToGroup,
 };

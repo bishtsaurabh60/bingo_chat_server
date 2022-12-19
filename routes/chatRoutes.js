@@ -6,6 +6,7 @@ import {
     createGroupChat,
     renameGroup,
     removeFromGroup,
+    leaveFromGroup,
     addToGroup,
 } from "../controllers/chatControllers.js";
 
@@ -17,5 +18,6 @@ router.route('/group').post(protect, createGroupChat);
 router.route('/rename').put(protect, renameGroup);
 router.route('/groupadd').put(protect, addToGroup);
 router.route('/groupremove').put(protect, removeFromGroup);
+router.route('/leave').put(protect, leaveFromGroup);
 
 export default router;

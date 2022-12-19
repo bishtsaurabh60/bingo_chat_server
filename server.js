@@ -9,6 +9,11 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 connectDB();
@@ -16,7 +21,7 @@ const app = express();
 
 app.use(cookieParser());
 app.use(express.json()); // to accept json data
-app.use(express.urlencoded({ extended: true })); // to accept form data
+app.use(express.urlencoded({ extended: false })); // to accept form data
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -34,10 +39,21 @@ app.use(
   })
 );
 
+app.use("/", express.static(path.join(__dirname, "public")));
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
+app.all("*", (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.json({ message: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
 // Error Handling middlewares
 app.use(notFound);
 app.use(errorHandler);
@@ -66,9 +82,12 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log('user has joined a room : '+ room);
     });
+  
+  socket.on("typing", (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
     socket.on('new message', (newMessageReceived) => {
-        let chat = newMessageReceived.chat;
+        let chat = newMessageReceived?.chat;
 
         if (!chat.users) return console.log('chat.users not define');
 
@@ -76,13 +95,11 @@ io.on('connection', (socket) => {
             if (user._id === newMessageReceived.sender._id) return;
 
             // inside the user's room
-            socket.in(user._id).emit('message received', newMessageReceived);
+            socket.in(user?._id).emit('message received', newMessageReceived);
         });
     });
 
-    socket.on('typing', (room) => socket.in(room).emit('typing'));
-    socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
-
+    
     socket.off('setup', () => {
         console.log('User Disconnected');
         socket.leave(userData._id);
