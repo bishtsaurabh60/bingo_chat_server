@@ -26,9 +26,10 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (
-        ["http://localhost:3000", "https://bingo-chat.onrender.com"].indexOf(
-          origin
-        ) !== -1
+        [
+          "http://localhost:3000",
+          "https://bingo-chat-bisht60.netlify.app",
+        ].indexOf(origin) !== -1
       ) {
         callback(null, true);
       } else {
@@ -39,16 +40,16 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "..",'build')));
+// app.use(express.static(path.join(__dirname, "..",'build')));
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname,'..',"client","build", "index.html"));
-});
+// app.get("*", function (req, res) {
+//   res.sendFile(path.join(__dirname,'..',"client","build", "index.html"));
+// });
 
 // app.all("*", (req, res) => {
 //   res.status(404);
@@ -70,7 +71,10 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
-    origin: ["http://localhost:3000", "https://bingo-chat.onrender.com"],
+    origin: [
+      "http://localhost:3000",
+      "https://bingo-chat-bisht60.netlify.app",
+    ],
   },
 });
 
