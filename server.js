@@ -40,27 +40,21 @@ app.use(
   })
 );
 
-// app.use(express.static(path.join(__dirname, "..",'build')));
+app.use('/',express.static(path.join(__dirname, 'public')));
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
-// app.use(express.static(path.join(__dirname, "build")));
-
-// app.get("*", function (req, res) {
-//   res.sendFile(path.join(__dirname,'..',"client","build", "index.html"));
-// });
-
-// app.all("*", (req, res) => {
-//   res.status(404);
-//   if (req.accepts("html")) {
-//     res.sendFile(path.join(__dirname, "views", "404.html"));
-//   } else if (req.accepts("json")) {
-//     res.json({ message: "404 Not Found" });
-//   } else {
-//     res.type("txt").send("404 Not Found");
-//   }
-// });
+app.all("*", (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.json({ message: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
 // Error Handling middlewares
 app.use(notFound);
 app.use(errorHandler);
