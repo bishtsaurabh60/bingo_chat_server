@@ -25,11 +25,20 @@ const sendMessage = asyncHandler(async (req, res) => {
         };
         let message = await Message.create(newMessage);
 
-       message = await message.populate('sender', 'name pic');
-        message = await message.populate('chat');
-        message = await User.populate(message, {
-            path: 'chat.users',
-            select:'name pic email'
+    //    message = await message.populate('sender', 'name pic');
+    //     message = await message.populate('chat');
+    //     message = await User.populate(message, {
+    //         path: 'chat.users',
+    //         select:'name pic email'
+    //     });
+        
+        message = await (
+          await message.populate("sender", "name pic")
+        ).populate({
+          path: "chat",
+          select: "chatName isGroupChat users",
+          model: "Chat",
+          populate: { path: "users", select: "name email pic", model: "User" },
         });
 
         await Chat.findByIdAndUpdate(chatId, {

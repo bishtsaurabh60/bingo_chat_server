@@ -68,7 +68,6 @@ const fetchChats = asyncHandler(async (req, res) => {
       .populate("groupAdmin", "-password")
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
-      .exec();
     
     results = await User.populate(results, {
       path: "latestMessage.sender",
@@ -236,6 +235,10 @@ const removeFromGroup = asyncHandler(async (req, res) => {
     res.status(200).json(removed);
   }
 });
+
+// @desc    leave from Group
+// @route   PUT /api/chat/leave
+// @access  Protected
 const leaveFromGroup = asyncHandler(async (req, res) => {
   const { userId, chatId } = req.body;
 
@@ -264,6 +267,7 @@ const leaveFromGroup = asyncHandler(async (req, res) => {
     res.status(200).json(removed);
   }
 });
+
 
 export {
   accessChat,
